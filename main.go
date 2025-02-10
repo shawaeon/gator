@@ -18,29 +18,30 @@ func main(){
 	if err != nil {
 		log.Fatalf("error reading config: %v", err)
 	}
+
 	appState := state {
 		cfg: &cfg,
 	}
 
+	cmds := commands {
+		commandNames: map[string]func(*state, command) error {},
+	}
+	cmds.register("login", handlerLogin)
+
 	if len(os.Args) < 2 {
-		fmt.Println("error: no command arguments")
+		fmt.Println("Usage: cli <command> [args...]")
 		os.Exit(1)
 	}
 
-	commandInput := os.Args[1]
+	commandName := os.Args[1]
 	commandArgs := os.Args[2:]
 
 	testCommand := command {
-		name: commandInput,
+		name: commandName,
 		arguments: commandArgs,
-	}
+	}	
 
-	testCommands := commands {
-		commandNames: map[string]func(*state, command) error {},
-	}
-	testCommands.register(testCommand.name, handlerLogin)
-
-	err = testCommands.run(&appState, testCommand)
+	err = cmds.run(&appState, testCommand)
 	if err != nil {
 		log.Fatal(err)
 	}
