@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/shawaeon/gator/internal/config"
 )
@@ -19,18 +21,27 @@ func main(){
 	appState := state {
 		cfg: &cfg,
 	}
-	loginCommand := command {
-		name: "login",
-		arguments: []string{"test"},
+
+	if len(os.Args) < 2 {
+		fmt.Println("error: no command arguments")
+		os.Exit(1)
+	}
+
+	commandInput := os.Args[1]
+	commandArgs := os.Args[2:]
+
+	testCommand := command {
+		name: commandInput,
+		arguments: commandArgs,
 	}
 
 	testCommands := commands {
 		commandNames: map[string]func(*state, command) error {},
 	}
-	testCommands.register(loginCommand.name, handlerLogin)
+	testCommands.register(testCommand.name, handlerLogin)
 
-	err = testCommands.run(&appState, loginCommand)
+	err = testCommands.run(&appState, testCommand)
 	if err != nil {
-		log.Fatalf("error logging in: %v", err)
+		log.Fatal(err)
 	}
 }
