@@ -1,15 +1,19 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
 
+	_ "github.com/lib/pq"
 	"github.com/shawaeon/gator/internal/config"
+	"github.com/shawaeon/gator/internal/database"
 )
 
 
 type state struct {
+	db		*database.Queries
 	cfg		*config.Config
 }
 
@@ -19,7 +23,14 @@ func main(){
 		log.Fatalf("error reading config: %v", err)
 	}
 
+	db, err := sql.Open("postgres", cfg.DbURL)
+	if err != nil {
+		log.Fatalf("error connecting to database: %v", err)
+	}
+	dbQueries := database.New(db)
+
 	appState := state {
+		db: dbQueries,
 		cfg: &cfg,
 	}
 
