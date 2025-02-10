@@ -2,15 +2,23 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/shawaeon/gator/internal/config"
 )
 
 func main(){
-	config, err := config.Read()
+	cfg, err := config.Read()
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalf("error reading config: %v", err)
 	}
-	fmt.Println("Testing config:")
-	fmt.Println(config.DbURL)
+	err = config.SetUser(&cfg, "shawaeon")
+	if err != nil {
+		log.Fatalf("error reafing config: %v",err)
+	}
+	cfg, err = config.Read()
+	if err != nil {
+		log.Fatalf("error reading config: %v", err)
+	}
+	fmt.Println(cfg)
 }
