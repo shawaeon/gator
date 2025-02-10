@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/shawaeon/gator/internal/config"
@@ -12,13 +11,12 @@ func main(){
 	if err != nil {
 		log.Fatalf("error reading config: %v", err)
 	}
-	err = config.SetUser(&cfg, "shawaeon")
-	if err != nil {
-		log.Fatalf("error reafing config: %v",err)
+	s := state {
+		cfg: &cfg,
 	}
-	cfg, err = config.Read()
-	if err != nil {
-		log.Fatalf("error reading config: %v", err)
+	loginCommand := command {
+		name: "login",
+		arguments: []string{"test"},
 	}
-	fmt.Println(cfg)
+	handlerLogin(&s, loginCommand)
 }
