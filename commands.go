@@ -5,22 +5,22 @@ import (
 )
 
 type command struct {
-	name 		string
-	arguments	[]string
+	Name 		string
+	Args	[]string
 }
 
 type commands struct {
-	commandNames	map[string]func(*state, command) error
+	registeredCommands	map[string]func(*state, command) error
 }
 
 // Add a function to commands
 func (c *commands) register(name string, f func(*state, command) error) {
-	c.commandNames[name] = f
+	c.registeredCommands[name] = f
 }
 
 // Run a function from commans
 func (c *commands) run(s *state, cmd command) error {
-	commandFunc, ok := c.commandNames[cmd.name]
+	commandFunc, ok := c.registeredCommands[cmd.Name]
 	if !ok {
 		return fmt.Errorf("error: command not found")
 	}

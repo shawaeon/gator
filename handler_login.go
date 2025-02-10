@@ -8,14 +8,14 @@ import (
 
 // Login as cmd.arguments[0]
 func handlerLogin (s *state, cmd command) error {
-	if len(cmd.arguments) == 0 {
-		return fmt.Errorf("error: no username")
+	if len(cmd.Args) == 0 {
+		return fmt.Errorf("usage: %s <name>", cmd.Name)
 	}
-	username := cmd.arguments[0]
+	username := cmd.Args[0]
 
 	err := config.SetUser(s.cfg, username)
 	if err != nil {
-		return err
+		return fmt.Errorf("couldn't set current user: %w", err)
 	}
 
 	fmt.Printf("Logged in as %s\n", username)
