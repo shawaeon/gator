@@ -6,17 +6,31 @@ import (
 	"github.com/shawaeon/gator/internal/config"
 )
 
+
+type state struct {
+	cfg		*config.Config
+}
+
 func main(){
 	cfg, err := config.Read()
 	if err != nil {
 		log.Fatalf("error reading config: %v", err)
 	}
-	s := state {
+	appState := state {
 		cfg: &cfg,
 	}
 	loginCommand := command {
 		name: "login",
 		arguments: []string{"test"},
 	}
-	handlerLogin(&s, loginCommand)
+
+	testCommands := commands {
+		commandNames: map[string]func(*state, command) error {},
+	}
+	testCommands.register(loginCommand.name, handlerLogin)
+
+	err = testCommands.run(&appState, loginCommand)
+	if err != nil {
+		log.Fatalf("error logging in: %v", err)
+	}
 }
