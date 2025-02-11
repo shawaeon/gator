@@ -17,14 +17,12 @@ func handlerRegister (s *state, cmd command) error {
 	}
 
 	ctx := context.Background()
-	uuid := uuid.New()	
-	timeNow := time.Now()
 	username := cmd.Args[0]
 
 	insertedUser, err := s.db.CreateUser(ctx, database.CreateUserParams{
-		ID: uuid,
-		CreatedAt: timeNow,
-		UpdatedAt: timeNow,
+		ID: uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 		Name: username,
 	})
 	if err != nil {
@@ -36,7 +34,15 @@ func handlerRegister (s *state, cmd command) error {
 		return fmt.Errorf("couldn't set current user: %w", err)
 	}
 
-	fmt.Printf("User added: \n%v\n", insertedUser.Name)
+	fmt.Println("User added:")
+	printUser(insertedUser)
 
 	return nil
+}
+
+func printUser(user database.User) {
+	fmt.Printf("* ID:			%v\n", user.ID)
+	fmt.Printf("* Name:			%s\n", user.Name)
+	fmt.Println()
+	fmt.Println("===============================================================")
 }

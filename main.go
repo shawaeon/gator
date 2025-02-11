@@ -43,6 +43,7 @@ func main(){
 	cmds.register("reset", handlerReset)
 	cmds.register("users", handlerListUsers)
 	cmds.register("agg", handlerAgg)
+	cmds.register("addfeed", handlerAddFeed)
 
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: cli <command> [args...]")
@@ -52,12 +53,12 @@ func main(){
 	commandName := os.Args[1]
 	commandArgs := os.Args[2:]
 
-	testCommand := command {
+	cmd := command {
 		Name: commandName,
 		Args: commandArgs,
 	}	
 
-	err = cmds.run(&appState, testCommand)
+	err = cmds.run(&appState, cmd)
 	if err != nil {
 		log.Fatal(err)
 	}
