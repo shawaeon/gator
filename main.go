@@ -39,6 +39,7 @@ func main(){
 		registeredCommands: map[string]func(*state, command) error {},
 	}
 	cmds.register("login", handlerLogin)
+	cmds.register("register", handlerRegister)
 
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: cli <command> [args...]")
