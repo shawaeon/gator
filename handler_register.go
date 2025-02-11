@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/shawaeon/gator/internal/config"
 	"github.com/shawaeon/gator/internal/database"
 )
 
@@ -31,9 +31,12 @@ func handlerRegister (s *state, cmd command) error {
 		return err
 	}
 	
-	s.cfg.CurrentUserName = username
-	fmt.Printf("User added: %v\n", username)
-	log.Printf("User added: %v\n", insertedUser)
+	err = config.SetUser(s.cfg, username)
+	if err != nil {
+		return fmt.Errorf("couldn't set current user: %w", err)
+	}
+
+	fmt.Printf("User added: \n%v\n", insertedUser.Name)
 
 	return nil
 }
