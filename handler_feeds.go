@@ -57,12 +57,27 @@ func handlerListFeeds(s *state, cmd command) error {
 
 	fmt.Println("Your feeds:")
 	for _, feed := range fetchedFeeds {
+		userName, err := getUserName(s, feed)
+		if err != nil {
+			return fmt.Errorf("could not fetch user associated with feed: %w", err)
+		}
+		
 		printFeed(feed)
+		fmt.Printf("* Username:		%s\n", userName)
 		fmt.Println()
 	}
 	fmt.Println("===============================================================")
 
 	return nil
+}
+
+func getUserName(s *state, feed database.Feed) (string, error) {
+	ctx := context.Background()
+	fetchedUser, err := s.db.GetUserByID(ctx, feed.UserID)
+	if err != nil {
+		return "", err
+	}
+	return fetchedUser.Name, nil
 }
 
 func printFeed(feed database.Feed) {
