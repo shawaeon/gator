@@ -43,6 +43,28 @@ func handlerAddFeed(s *state, cmd command) error {
 	return nil
 }
 
+func handlerListFeeds(s *state, cmd command) error {
+	ctx := context.Background()
+	fetchedFeeds, err := s.db.GetFeeds(ctx)
+	if err != nil {
+		return fmt.Errorf("couldn't fetch feeds: %w", err)
+	}
+
+	if len(fetchedFeeds) == 0 {
+		println("No feeds found. Use addfeed <RSS feed name> <RSS feed url>.")
+		return nil
+	}
+
+	fmt.Println("Your feeds:")
+	for _, feed := range fetchedFeeds {
+		printFeed(feed)
+		fmt.Println()
+	}
+	fmt.Println("===============================================================")
+
+	return nil
+}
+
 func printFeed(feed database.Feed) {
 	fmt.Printf("* ID:			%s\n", feed.ID)
 	fmt.Printf("* CreatedAt:		%s\n", feed.CreatedAt)
