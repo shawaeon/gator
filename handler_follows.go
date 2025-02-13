@@ -38,9 +38,33 @@ func handlerFollowFeed(s *state, cmd command) error {
 	}
 
 	fmt.Println("Following:")
-	fmt.Printf("* Feed: %s\n", insertedFeedFollow.FeedName)
-	fmt.Printf("* User: %s\n", insertedFeedFollow.UserName)
+	fmt.Printf("* Feedname: %s\n", insertedFeedFollow.FeedName)
+	fmt.Printf("* Username: %s\n", insertedFeedFollow.UserName)
 	fmt.Println()
 	fmt.Println("===============================================================")
+	return nil
+}
+
+func handlerGetFeedFollows(s *state, cmd command) error {
+	ctx := context.Background()
+	user, err := s.db.GetUser(ctx, s.cfg.CurrentUserName)
+	if err != nil {
+		return err
+	}
+
+	fetchedFeedFollows, err := s.db.GetFeedFollowsForUser(ctx, user.ID)
+	if err != nil {
+		return fmt.Errorf("could not fetch follows: %w", err)
+	}
+
+	fmt.Println("Following feeds:")
+	for _, follow := range fetchedFeedFollows {
+		fmt.Printf("* Feedname: %s\n", follow.FeedName)
+	}
+	fmt.Println()
+	fmt.Printf("* Username: %s\n", user.Name)
+	fmt.Println()
+	fmt.Println("===============================================================")
+	
 	return nil
 }
