@@ -12,7 +12,6 @@ SELECT * FROM users
 WHERE ID = $1;
 
 -- name: ResetUsers :exec
-
 DELETE FROM users;
 
 -- name: GetUsers :many

@@ -109,7 +109,6 @@ func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
 }
 
 const resetUsers = `-- name: ResetUsers :exec
-
 DELETE FROM users
 `
 

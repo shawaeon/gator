@@ -47,6 +47,11 @@ func handlerGetFeedFollows(s *state, cmd command, user database.User) error {
 		return fmt.Errorf("could not fetch follows: %w", err)
 	}
 
+	if len(fetchedFeedFollows) == 0 {
+		println("You are not following any feeds. Use follow <RSS feed url>.")
+		return nil
+	}
+
 	fmt.Println("Following feeds:")
 	for _, follow := range fetchedFeedFollows {
 		fmt.Printf("* Feedname: %s\n", follow.FeedName)
@@ -56,5 +61,35 @@ func handlerGetFeedFollows(s *state, cmd command, user database.User) error {
 	fmt.Println()
 	fmt.Println("===============================================================")
 	
+	return nil
+}
+
+func handlerUnfollowFeed(s *state, cmd command, user database.User) error {
+	if len(cmd.Args) == 0 {
+		return fmt.Errorf("usage: %s <URL>", cmd.Name)
+	}
+	ctx := context.Background()
+	url := cmd.Args[0]
+
+	feed, err := s.db.GetFeedByURL(ctx, url)
+	if err != nil {
+		return fmt.Errorf("could not find feed: %w", err)
+	}
+
+	err = s.db.DeleteFeedFollow(ctx, database.DeleteFeedFollowParams{
+		FeedID: feed.ID,
+		UserID: user.ID,
+	})
+	if err != nil {
+		return fmt.Errorf("could not find follow: %w", err)
+	}
+	
+	fmt.Println("Unfollowed:")
+	fmt.Printf("* Feed: %s\n", feed.Name)
+	fmt.Printf("* User: %s\n", user.Name)
+	fmt.Println()
+	fmt.Println("===============================================================")
+
+
 	return nil
 }

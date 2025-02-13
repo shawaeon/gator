@@ -27,17 +27,18 @@ func handlerAddFeed(s *state, cmd command, user database.User) error {
 	})
 	if err != nil {
 		return fmt.Errorf("could not create feed: %w", err)
-	}
-
-	// Follow created feed
-	handlerFollowFeed(s, command {
-		Name: "follow",
-		Args: []string{insertedFeed.Url}}, user)
+	}	
 
 	fmt.Println("Feed created successfully:")
 	printFeed(insertedFeed)
 	fmt.Println()
 	fmt.Println("===============================================================")
+	fmt.Println()
+
+	// Follow created feed
+	handlerFollowFeed(s, command {
+		Name: "follow",
+		Args: []string{insertedFeed.Url}}, user)
 
 	return nil
 }
