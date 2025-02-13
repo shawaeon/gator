@@ -9,17 +9,13 @@ import (
 	"github.com/shawaeon/gator/internal/database"
 )
 
-func handlerFollowFeed(s *state, cmd command) error {
+func handlerFollowFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) == 0 {
 		return fmt.Errorf("usage: %s <URL>", cmd.Name)
 	}
 
 	ctx := context.Background()
 	url := cmd.Args[0]
-	user, err := s.db.GetUser(ctx, s.cfg.CurrentUserName)
-	if err != nil {
-		return err
-	}
 	
 	fetchedFeed, err := s.db.GetFeedByURL(ctx, url)
 	if err != nil {
@@ -45,14 +41,8 @@ func handlerFollowFeed(s *state, cmd command) error {
 	return nil
 }
 
-func handlerGetFeedFollows(s *state, cmd command) error {
-	ctx := context.Background()
-	user, err := s.db.GetUser(ctx, s.cfg.CurrentUserName)
-	if err != nil {
-		return err
-	}
-
-	fetchedFeedFollows, err := s.db.GetFeedFollowsForUser(ctx, user.ID)
+func handlerGetFeedFollows(s *state, cmd command, user database.User) error {
+	fetchedFeedFollows, err := s.db.GetFeedFollowsForUser(context.Background(), user.ID)
 	if err != nil {
 		return fmt.Errorf("could not fetch follows: %w", err)
 	}

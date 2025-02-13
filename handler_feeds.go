@@ -9,21 +9,15 @@ import (
 	"github.com/shawaeon/gator/internal/database"
 )
 
-func handlerAddFeed(s *state, cmd command) error {
+func handlerAddFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) < 2 {
 		return fmt.Errorf("usage: %s <RSS feed name> <RSS feed url>", cmd.Name)
 	}
 	
-	ctx := context.Background()	
 	feedName := cmd.Args[0]
-	feedUrl := cmd.Args[1]
+	feedUrl := cmd.Args[1]	
 
-	user, err := s.db.GetUser(ctx, s.cfg.CurrentUserName)
-	if err != nil {
-		return err
-	}
-
-	insertedFeed, err := s.db.CreateFeed(ctx, database.CreateFeedParams{
+	insertedFeed, err := s.db.CreateFeed(context.Background(), database.CreateFeedParams{
 		ID: uuid.New(),
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
@@ -38,8 +32,7 @@ func handlerAddFeed(s *state, cmd command) error {
 	// Follow created feed
 	handlerFollowFeed(s, command {
 		Name: "follow",
-		Args: []string{insertedFeed.Url},
-	})
+		Args: []string{insertedFeed.Url}}, user)
 
 	fmt.Println("Feed created successfully:")
 	printFeed(insertedFeed)
@@ -49,9 +42,8 @@ func handlerAddFeed(s *state, cmd command) error {
 	return nil
 }
 
-func handlerListFeeds(s *state, cmd command) error {
-	ctx := context.Background()
-	fetchedFeeds, err := s.db.GetFeeds(ctx)
+func handlerListFeeds(s *state, cmd command) error {	
+	fetchedFeeds, err := s.db.GetFeeds(context.Background())
 	if err != nil {
 		return fmt.Errorf("couldn't fetch feeds: %w", err)
 	}
@@ -77,9 +69,8 @@ func handlerListFeeds(s *state, cmd command) error {
 	return nil
 }
 
-func getUserName(s *state, feed database.Feed) (string, error) {
-	ctx := context.Background()
-	fetchedUser, err := s.db.GetUserByID(ctx, feed.UserID)
+func getUserName(s *state, feed database.Feed) (string, error) {	
+	fetchedUser, err := s.db.GetUserByID(context.Background(), feed.UserID)
 	if err != nil {
 		return "", err
 	}

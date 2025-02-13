@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
@@ -43,10 +44,10 @@ func main(){
 	cmds.register("reset", handlerReset)
 	cmds.register("users", handlerListUsers)
 	cmds.register("agg", handlerAgg)
-	cmds.register("addfeed", handlerAddFeed)
+	cmds.register("addfeed", middlewareLoggedIn(handlerAddFeed))
 	cmds.register("feeds", handlerListFeeds)
-	cmds.register("follow", handlerFollowFeed)
-	cmds.register("following", handlerGetFeedFollows)
+	cmds.register("follow", middlewareLoggedIn(handlerFollowFeed))
+	cmds.register("following", middlewareLoggedIn(handlerGetFeedFollows))
 
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: cli <command> [args...]")
@@ -64,5 +65,16 @@ func main(){
 	err = cmds.run(&appState, cmd)
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+// Check that user is logged in
+func middlewareLoggedIn(handler func(s *state, cmd command, user database.User) error) func(s *state, cmd command) error {
+	return func(s *state, cmd command) error{
+		user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
+		if err != nil {
+			return fmt.Errorf("not logged in")
+		}
+		return handler(s, cmd, user)
 	}
 }

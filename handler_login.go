@@ -11,12 +11,11 @@ import (
 func handlerLogin (s *state, cmd command) error {
 	if len(cmd.Args) == 0 {
 		return fmt.Errorf("usage: %s <name>", cmd.Name)
-	}
+	}	
 	
-	ctx := context.Background()
 	username := cmd.Args[0]
 
-	fetchedUser, err := s.db.GetUser(ctx, username)
+	fetchedUser, err := s.db.GetUser(context.Background(), username)
 	if err != nil {
 		return fmt.Errorf("couldn't find user: %w", err)
 	}

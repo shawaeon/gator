@@ -15,11 +15,10 @@ func handlerRegister (s *state, cmd command) error {
 	if len(cmd.Args) == 0 {
 		return fmt.Errorf("usage: %s <name>", cmd.Name)
 	}
-
-	ctx := context.Background()
+	
 	username := cmd.Args[0]
 
-	insertedUser, err := s.db.CreateUser(ctx, database.CreateUserParams{
+	insertedUser, err := s.db.CreateUser(context.Background(), database.CreateUserParams{
 		ID: uuid.New(),
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
