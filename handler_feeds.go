@@ -54,7 +54,7 @@ func handlerListFeeds(s *state, cmd command) error {
 		return nil
 	}
 
-	fmt.Println("Your feeds:")
+	fmt.Println("Feeds:")
 	for _, feed := range fetchedFeeds {
 		userName, err := getUserName(s, feed)
 		if err != nil {
