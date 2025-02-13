@@ -10,7 +10,7 @@ import (
 )
 
 func handlerAddFeed(s *state, cmd command, user database.User) error {
-	if len(cmd.Args) < 2 {
+	if len(cmd.Args) != 2 {
 		return fmt.Errorf("usage: %s <RSS feed name> <RSS feed url>", cmd.Name)
 	}
 	

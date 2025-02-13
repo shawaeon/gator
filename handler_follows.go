@@ -10,7 +10,7 @@ import (
 )
 
 func handlerFollowFeed(s *state, cmd command, user database.User) error {
-	if len(cmd.Args) == 0 {
+	if len(cmd.Args) != 1 {
 		return fmt.Errorf("usage: %s <URL>", cmd.Name)
 	}
 
@@ -65,7 +65,7 @@ func handlerGetFeedFollows(s *state, cmd command, user database.User) error {
 }
 
 func handlerUnfollowFeed(s *state, cmd command, user database.User) error {
-	if len(cmd.Args) == 0 {
+	if len(cmd.Args) != 1 {
 		return fmt.Errorf("usage: %s <URL>", cmd.Name)
 	}
 	ctx := context.Background()

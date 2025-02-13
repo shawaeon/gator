@@ -12,7 +12,7 @@ import (
 
 // Add a new user to the database
 func handlerRegister (s *state, cmd command) error {
-	if len(cmd.Args) == 0 {
+	if len(cmd.Args) != 1 {
 		return fmt.Errorf("usage: %s <name>", cmd.Name)
 	}
 	
@@ -41,7 +41,7 @@ func handlerRegister (s *state, cmd command) error {
 
 // Login as cmd.arguments[0]
 func handlerLogin (s *state, cmd command) error {
-	if len(cmd.Args) == 0 {
+	if len(cmd.Args) != 1 {
 		return fmt.Errorf("usage: %s <name>", cmd.Name)
 	}	
 	
