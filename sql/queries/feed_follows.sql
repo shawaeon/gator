@@ -6,6 +6,6 @@ WITH inserted AS (
 ) 
 SELECT inserted.*, users.name AS user_name, feeds.name AS feed_name
 FROM inserted
-LEFT JOIN users ON feed_follows.user_id = users.id
-LEFT JOIN feeds ON feed_follows.feed_id = feeds.id
+INNER JOIN users ON inserted.user_id = users.id
+INNER JOIN feeds ON inserted.feed_id = feeds.id
 ;

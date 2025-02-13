@@ -25,8 +25,8 @@ func handlerAddFeed(s *state, cmd command) error {
 
 	insertedFeed, err := s.db.CreateFeed(ctx, database.CreateFeedParams{
 		ID: uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 		Name: feedName,
 		Url: feedUrl,
 		UserID: user.ID,
